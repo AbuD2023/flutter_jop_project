@@ -12,7 +12,7 @@ class StatisticsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context).textTheme.bodyLarge;
     return Background(
-      showListNotiv: true,
+      // showListNotiv: true,
       title: 'الإحصائيات والتقييم',
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(16),

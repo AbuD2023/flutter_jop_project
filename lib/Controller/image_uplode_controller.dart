@@ -13,8 +13,8 @@ class ImageUploadController {
 
   ImageUploadController() : _dio = Dio() {
     _dio.options.baseUrl = _baseUrl;
-    _dio.options.connectTimeout = const Duration(seconds: 30);
-    _dio.options.receiveTimeout = const Duration(seconds: 30);
+    _dio.options.connectTimeout = const Duration(minutes: 5);
+    _dio.options.receiveTimeout = const Duration(minutes: 5);
   }
 
   Future<String?> uploadImage(File imageFile) async {

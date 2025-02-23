@@ -8,8 +8,8 @@ class ApiController {
 
   ApiController() : _dio = Dio() {
     _dio.options.baseUrl = _baseUrl;
-    _dio.options.connectTimeout = const Duration(seconds: 5);
-    _dio.options.receiveTimeout = const Duration(seconds: 3);
+    _dio.options.connectTimeout = const Duration(minutes: 5);
+    _dio.options.receiveTimeout = const Duration(minutes: 5);
 
     // إضافة Interceptors للتعامل مع الطلبات والاستجابات
     _dio.interceptors.add(InterceptorsWrapper(
@@ -18,6 +18,7 @@ class ApiController {
         options.headers.addAll({
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'accept': 'text/plain',
           // يمكنك إضافة توكن المصادقة هنا
           // 'Authorization': 'Bearer $token',
         });
@@ -50,8 +51,8 @@ class ApiController {
         endpoint,
         queryParameters: queryParameters,
       );
-
-      if (response.statusCode == 200) {
+      log(response.statusCode.toString(), name: 'status code');
+      if (response.statusCode == 200 || response.statusCode == 201) {
         return fromJson(response.data);
       } else {
         throw DioException(
