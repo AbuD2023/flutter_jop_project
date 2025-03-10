@@ -13,13 +13,18 @@ class JobsProvider with ChangeNotifier {
 
   //setters
   List<JobAdvertisementModel> _jobs = [];
+  List<JobAdvertisementModel> _jobsSearch = [];
   bool _isLoading = false;
   String? _error;
+  TextEditingController _controller = TextEditingController();
 
   // Getters
   List<JobAdvertisementModel> get jobs => _jobs;
+  List<JobAdvertisementModel> get jobsSearch => _jobsSearch;
   bool get isLoading => _isLoading;
   String? get error => _error;
+
+  TextEditingController get controller => _controller;
 
   Future<void> getJobs() async {
     try {
@@ -279,5 +284,14 @@ class JobsProvider with ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  void search() {
+    String query = _controller.text;
+    _jobsSearch = _jobs
+        .where(
+            (job) => job.nameJob!.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+    notifyListeners();
   }
 }

@@ -162,7 +162,14 @@ class PDFGenerator {
           if (!status.isGranted) {
             status = await Permission.storage.request();
             if (!status.isGranted) {
-              throw Exception('تم رفض إذن الوصول إلى التخزين');
+              var status2 = await Permission.manageExternalStorage.status;
+              if (!status2.isGranted) {
+                status2 = await Permission.manageExternalStorage.request();
+                if (!status2.isGranted) {
+                  throw Exception(
+                      'تم رفض إذن الوصول إلى التخزين manageExternalStorage');
+                }
+              }
             }
           }
 

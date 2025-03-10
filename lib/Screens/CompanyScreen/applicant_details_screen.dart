@@ -9,7 +9,7 @@ import 'package:jop_project/Models/orders_model.dart';
 import 'package:jop_project/Models/searcher_model.dart';
 import 'package:jop_project/Providers/Orders/order_provider.dart';
 import 'package:jop_project/Providers/SignUp/company_signin_login_provider.dart';
-import 'package:jop_project/Screens/JopScreen/ChatScreen/chat_screen.dart';
+import 'package:jop_project/Screens/ChatScreen/chat_screen.dart';
 import 'package:jop_project/components/background.dart';
 import 'package:jop_project/constants.dart';
 import 'package:jop_project/responsive.dart';
@@ -108,13 +108,14 @@ class ApplicantDetailsScreen extends StatelessWidget {
                             // رقم الهاتف - يمكنك تغييره حسب احتياجك
                             final Uri phoneUri = Uri(
                               scheme: 'tel',
-                              path: searcher.phone ?? '', // ضع رقم الهاتف هنا
+                              path:
+                                  searcher.phone ?? '777', // ضع رقم الهاتف هنا
                             );
-                            if (await canLaunchUrl(phoneUri)) {
-                              await launchUrl(phoneUri);
-                            } else {
-                              throw 'Could not launch phone call';
-                            }
+                            // if (await canLaunchUrl(phoneUri)) {
+                            await launchUrl(phoneUri);
+                            // } else {
+                            //   throw 'Could not launch phone call';
+                            // }
                           } else {
                             // في حالة سطح المكتب
                             showDialog(
@@ -137,10 +138,11 @@ class ApplicantDetailsScreen extends StatelessWidget {
                             );
                           }
                         } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('لا يمكن إجراء المكالمة'),
-                            ),
+                          Get.snackbar(
+                            'خطأ',
+                            'لا يمكن إجراء المكالمة',
+                            backgroundColor: Colors.red,
+                            colorText: Colors.white,
                           );
                         }
                       },
@@ -220,7 +222,10 @@ class ApplicantDetailsScreen extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (context) => ChatScreen(
-                              userName: searcher.fullName ?? '',
+                              searchersModel: searcher,
+                              companyModel: null,
+                              chatId:
+                                  '${searcher.id}_${companyProvider.currentCompany?.id}',
                             ),
                           ),
                         );
@@ -532,9 +537,12 @@ class ApplicantDetailsContent extends StatelessWidget {
         children: [
           Icon(icon, color: const Color.fromARGB(255, 62, 99, 154)),
           const SizedBox(width: 10),
-          Text(
-            text,
-            style: const TextStyle(fontSize: 16, color: Colors.black),
+          Flexible(
+            child: Text(
+              text,
+              textDirection: TextDirection.rtl,
+              style: const TextStyle(fontSize: 16, color: Colors.black),
+            ),
           ),
         ],
       ),

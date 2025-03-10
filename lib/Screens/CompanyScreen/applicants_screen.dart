@@ -2,16 +2,19 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:jop_project/Models/job_advertisement_model.dart';
 import 'package:jop_project/Models/orders_model.dart';
 import 'package:jop_project/Models/searcher_model.dart';
 import 'package:jop_project/Providers/Orders/order_provider.dart';
 import 'package:jop_project/Providers/Searchers/searchers_provider.dart';
+import 'package:jop_project/Providers/SignUp/company_signin_login_provider.dart';
 import 'package:jop_project/Screens/CompanyScreen/applicant_details_screen.dart';
-import 'package:jop_project/Screens/JopScreen/ChatScreen/chat_screen.dart';
+import 'package:jop_project/Screens/ChatScreen/chat_screen.dart';
 import 'package:jop_project/components/background.dart';
 import 'package:jop_project/constants.dart';
 import 'package:jop_project/responsive.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -222,7 +225,9 @@ class ApplicantsList extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => ChatScreen(
-                                    userName: searcher.fullName ?? '',
+                                    searchersModel: searcher,
+                                    chatId:
+                                        '${searcher.id}_${Provider.of<CompanySigninLoginProvider>(context).currentCompany?.id}',
                                   ),
                                 ),
                               );
@@ -238,17 +243,24 @@ class ApplicantsList extends StatelessWidget {
                               try {
                                 // تحقق مما إذا كان الجهاز محمولاً أم لا
                                 if (Platform.isAndroid || Platform.isIOS) {
+                                  var state = await Permission.phone.status;
+                                  if (!state.isGranted) {
+                                    state = await Permission.phone.request();
+                                    if (!state.isGranted) {
+                                      throw 'لا يمكن إجراء المكالمة';
+                                    }
+                                  }
                                   // رقم الهاتف - يمكنك تغييره حسب احتياجك
                                   final Uri phoneUri = Uri(
                                     scheme: 'tel',
                                     path: searcher.phone ??
                                         '', // ضع رقم الهاتف هنا
                                   );
-                                  if (await canLaunchUrl(phoneUri)) {
-                                    await launchUrl(phoneUri);
-                                  } else {
-                                    throw 'Could not launch phone call';
-                                  }
+                                  // if (await canLaunchUrl(phoneUri)) {
+                                  await launchUrl(phoneUri);
+                                  // } else {
+                                  //   throw 'Could not launch phone call';
+                                  // }
                                 } else {
                                   // في حالة سطح المكتب
                                   showDialog(
@@ -271,10 +283,11 @@ class ApplicantsList extends StatelessWidget {
                                   );
                                 }
                               } catch (e) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('لا يمكن إجراء المكالمة'),
-                                  ),
+                                Get.snackbar(
+                                  'خطأ',
+                                  'لا يمكن إجراء المكالمة',
+                                  backgroundColor: Colors.red,
+                                  colorText: Colors.white,
                                 );
                               }
                             },

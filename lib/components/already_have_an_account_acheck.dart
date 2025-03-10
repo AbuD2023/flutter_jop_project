@@ -16,23 +16,22 @@ class AlreadyHaveAnAccountCheck extends StatelessWidget {
       textDirection: TextDirection.rtl,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Expanded(
+          // Expanded(
+          //   child: Text(
+          //     login ? "لا امتلك حساب ؟ " : "لدي حساب بالفعل ؟ ",
+          //     textDirection: TextDirection.rtl,
+          //     style: const TextStyle(color: kPrimaryColor),
+          //   ),
+          // ),
+          GestureDetector(
+            onTap: press as void Function()?,
             child: Text(
-              login ? "لا امتلك حساب ؟ " : "لدي حساب بالفعل ؟ ",
-              textDirection: TextDirection.rtl,
-              style: const TextStyle(color: kPrimaryColor),
-            ),
-          ),
-          Flexible(
-            child: GestureDetector(
-              onTap: press as void Function()?,
-              child: Text(
-                login ? "إنشاء حساب" : "تسجيل دخول",
-                style: const TextStyle(
-                  color: kPrimaryColor,
-                  fontWeight: FontWeight.bold,
-                ),
+              login ? "إنشاء حساب" : "تسجيل دخول",
+              style: const TextStyle(
+                color: kPrimaryColor,
+                fontWeight: FontWeight.bold,
               ),
             ),
           )

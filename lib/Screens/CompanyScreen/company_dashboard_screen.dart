@@ -50,7 +50,9 @@ class CompanyDashboardScreen extends StatelessWidget {
       children: [
         CircleAvatar(
           radius: 50,
-          backgroundImage: NetworkImage(company.img!),
+          backgroundImage: company.img != null
+              ? NetworkImage(company.img!)
+              : const AssetImage('assets/images/profile.png'),
         ),
         const SizedBox(height: 16),
         Text(
@@ -76,7 +78,8 @@ class CompanyDashboardScreen extends StatelessWidget {
     final orders = Provider.of<OrderProvider>(context);
     final jobs = Provider.of<JobsProvider>(context);
     final searchersProvider = Provider.of<SearchersProvider>(context);
-    final job = jobs.jobs.where((element) => element.companyId == company.id);
+    final job =
+        jobs.jobs.where((element) => element.companyId == company.id).toList();
     final order = orders.orders.where(
         (element) => job.any((job) => job.id == element.jobAdvertisementId));
     final count = order.length;
@@ -118,7 +121,9 @@ class CompanyDashboardScreen extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ApplicantsScreen(),
+              builder: (context) => ApplicantsScreen(
+                job: job[0],
+              ),
             ),
           );
         }, context),
@@ -179,7 +184,7 @@ class CompanyDashboardScreen extends StatelessWidget {
                 title,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
-                  fontSize: 16,
+                  fontSize: 12,
                   fontWeight: FontWeight.bold,
                   color: kPrimaryTextColor,
                 ),

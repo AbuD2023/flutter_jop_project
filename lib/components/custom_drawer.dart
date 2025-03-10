@@ -19,14 +19,14 @@ import 'package:provider/provider.dart';
 class CustomDrawer extends StatelessWidget {
   final bool isCompany;
   final String name;
-  final String imagePath;
+  final String? imagePath;
   final int availableJobs;
 
   const CustomDrawer({
     super.key,
     required this.isCompany,
     required this.name,
-    required this.imagePath,
+    this.imagePath,
     this.availableJobs = 0,
   });
 
@@ -64,17 +64,40 @@ class CustomDrawer extends StatelessWidget {
                       ),
                     ),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(50),
-                      child: imagePath.isNotEmpty
-                          ? Image.network(
-                              imagePath,
-                              fit: BoxFit.contain,
-                            )
-                          : const Icon(
-                              Icons.person,
-                              size: 50,
-                            ),
-                    ),
+                        borderRadius: BorderRadius.circular(50),
+                        child:
+                            //  imagePath != null && imagePath != ''
+                            //     ?
+                            Image.network(imagePath!,
+                                fit: BoxFit.contain,
+                                filterQuality: FilterQuality.high,
+                                loadingBuilder:
+                                    (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(loadingProgress.expectedTotalBytes != null
+                                  ? (loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes!)
+                                      .toStringAsFixed(2)
+                                  : ''),
+                              const CircularProgressIndicator(),
+                            ],
+                          );
+                        }, errorBuilder: (context, error, stackTrace) {
+                          return const Icon(
+                            Icons.person,
+                            size: 50,
+                          );
+                        })
+                        // : const Icon(
+                        //     Icons.person,
+                        //     size: 50,
+                        //   ),
+                        ),
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -92,13 +115,17 @@ class CustomDrawer extends StatelessWidget {
                     title: 'لوحة التحكم',
                     onTap: () {
                       Navigator.pop(context);
-                      Navigator.push(
+                      Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
                           builder: (context) => CompanyDashboardScreen(
-                            company: CompanyModel(),
+                            company:
+                                Provider.of<CompanySigninLoginProvider>(context)
+                                        .currentCompany ??
+                                    CompanyModel(),
                           ),
                         ),
+                        (route) => false,
                       );
                     },
                   ),

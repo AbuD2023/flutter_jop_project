@@ -6,10 +6,11 @@
     <!-- للأجهزة التي تعمل بنظام Android 10 (API level 29) وما فوق -->
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <application
-        android:label="jop_project"
+        android:label="وضيفتي"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"

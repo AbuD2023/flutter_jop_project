@@ -259,7 +259,7 @@ class InfoBodyWidget extends StatelessWidget {
                     special: requiredQualifications.text, // تخصص //----
                     timeWork: applicationPeriod.text, //نوع الوقت //----
                     typeOfPlace: area.text, //نوع المكان //--------******
-                    worksFileId: 1,
+                    worksFileId: 2,
                   );
                   await jopProvider.addJobs(
                     jobAdvertisementModel: jobAdvertisementModel,
@@ -271,33 +271,6 @@ class InfoBodyWidget extends StatelessWidget {
                         icon: const Icon(Icons.error, color: Colors.white),
                         duration: const Duration(seconds: 3),
                         snackPosition: SnackPosition.BOTTOM);
-                    // showDialog(
-                    //   context: context,
-                    //   builder: (BuildContext context) {
-                    //     return Directionality(
-                    //       textDirection: TextDirection.rtl,
-                    //       child: AlertDialog(
-                    //         title: const Text(
-                    //           'خطأ',
-                    //           style: TextStyle(color: Colors.red),
-                    //         ),
-                    //         content: Text(jopProvider.error!),
-                    //         actionsAlignment: MainAxisAlignment.center,
-                    //         actions: [
-                    //           TextButton(
-                    //             onPressed: () {
-                    //               Navigator.pop(context);
-                    //             },
-                    //             child: const Text(
-                    //               'حسناً',
-                    //               style: TextStyle(color: Colors.black),
-                    //             ),
-                    //           ),
-                    //         ],
-                    //       ),
-                    //     );
-                    //   },
-                    // );
                   } else {
                     Get.snackbar('تمت الإضافة بنجاح', 'تمت الإضافة بنجاح',
                         backgroundColor: Colors.green,

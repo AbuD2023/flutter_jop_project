@@ -8,7 +8,7 @@ import 'package:jop_project/responsive.dart';
 import 'package:jop_project/size_config.dart';
 import 'package:provider/provider.dart';
 
-class EditJopScreen extends StatefulWidget {
+class EditJopScreen extends StatelessWidget {
   final JobAdvertisementModel jobAdvertisementModel;
   const EditJopScreen({
     super.key,
@@ -16,39 +16,36 @@ class EditJopScreen extends StatefulWidget {
   });
 
   @override
-  State<EditJopScreen> createState() => _EditJopScreenState();
-}
-
-class _EditJopScreenState extends State<EditJopScreen> {
-  final descriptionController = TextEditingController();
-  final addrees = TextEditingController();
-  final requiredQualifications = TextEditingController();
-  final workType = TextEditingController();
-  final area = TextEditingController();
-  final applicationPeriod = TextEditingController();
-  final salary = TextEditingController();
-  final jopNameController = TextEditingController();
-  final expController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      descriptionController.text = widget.jobAdvertisementModel.descrip!;
-      addrees.text = widget.jobAdvertisementModel.location!;
-      jopNameController.text = widget.jobAdvertisementModel.nameJob!;
-      expController.text = widget.jobAdvertisementModel.periodExper!;
-      workType.text = widget.jobAdvertisementModel.permanenceType!;
-      salary.text = widget.jobAdvertisementModel.salry!;
-      requiredQualifications.text = widget.jobAdvertisementModel.special!;
-      applicationPeriod.text = widget.jobAdvertisementModel.timeWork!;
-      area.text = widget.jobAdvertisementModel.typeOfPlace!;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final descriptionController = TextEditingController();
+
+    final addrees = TextEditingController();
+
+    final requiredQualifications = TextEditingController();
+
+    final workType = TextEditingController();
+
+    final area = TextEditingController();
+
+    final applicationPeriod = TextEditingController();
+
+    final salary = TextEditingController();
+
+    final jopNameController = TextEditingController();
+
+    final expController = TextEditingController();
     final companyProvider = Provider.of<CompanySigninLoginProvider>(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      descriptionController.text = jobAdvertisementModel.descrip!;
+      addrees.text = jobAdvertisementModel.location!;
+      jopNameController.text = jobAdvertisementModel.nameJob!;
+      expController.text = jobAdvertisementModel.periodExper!;
+      workType.text = jobAdvertisementModel.permanenceType!;
+      salary.text = jobAdvertisementModel.salry!;
+      requiredQualifications.text = jobAdvertisementModel.special!;
+      applicationPeriod.text = jobAdvertisementModel.timeWork!;
+      area.text = jobAdvertisementModel.typeOfPlace!;
+    });
     return Background(
       showListNotiv: true,
       title: 'تعديل وظيفة',
@@ -59,7 +56,7 @@ class _EditJopScreenState extends State<EditJopScreen> {
         child: SingleChildScrollView(
           child: Responsive(
             mobile: MobileHomeJopInfoScreen(
-              jobAdvertisementModel: widget.jobAdvertisementModel,
+              jobAdvertisementModel: jobAdvertisementModel,
               expController: expController,
               jopNameController: jopNameController,
               descriptionController: descriptionController,
@@ -122,7 +119,7 @@ class _EditJopScreenState extends State<EditJopScreen> {
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: InfoBodyWidget(
-                      jobAdvertisementModel: widget.jobAdvertisementModel,
+                      jobAdvertisementModel: jobAdvertisementModel,
                       expController: expController,
                       jopNameController: jopNameController,
                       descriptionController: descriptionController,

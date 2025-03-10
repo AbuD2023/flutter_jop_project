@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jop_project/Models/company_model.dart';
 import 'package:jop_project/Providers/Job/job_provider.dart';
 import 'package:jop_project/Providers/Companies/companies_provider.dart';
 import 'package:jop_project/Screens/JopScreen/Home/components/home_list_tile_widget.dart';
@@ -15,6 +16,7 @@ class HomeBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final companyProvider = Provider.of<CompaniesProvider>(context);
+
     return SafeArea(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -37,34 +39,39 @@ class HomeBody extends StatelessWidget {
               Expanded(
                 flex: 6,
                 child: TextField(
+                  controller: context.watch<JobsProvider>().controller,
                   textAlign: TextAlign.right,
                   textDirection: TextDirection.rtl,
                   minLines: 1,
                   maxLines: 1,
+                  onChanged: (value) {
+                    context.read<JobsProvider>().search();
+                  },
                   decoration: InputDecoration(
                       filled: true,
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(7),
-                        borderSide: BorderSide(
-                            color: const Color.fromARGB(255, 209, 209, 209),
+                        borderSide: const BorderSide(
+                            color: Color.fromARGB(255, 209, 209, 209),
                             width: 2.0),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(7),
-                        borderSide: BorderSide(
-                            color: const Color.fromARGB(255, 209, 209, 209),
+                        borderSide: const BorderSide(
+                            color: Color.fromARGB(255, 209, 209, 209),
                             width: 2.0),
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(7),
-                        borderSide: BorderSide(color: Colors.white, width: 2.0),
+                        borderSide:
+                            const BorderSide(color: Colors.white, width: 2.0),
                       ),
-                      suffixIcon: Icon(
+                      suffixIcon: const Icon(
                         Icons.search,
                         color: Colors.grey,
                       ),
                       hintText: 'البحث',
-                      hintStyle: TextStyle(color: Colors.grey)),
+                      hintStyle: const TextStyle(color: Colors.grey)),
                 ),
               ),
               Container(
@@ -88,37 +95,120 @@ class HomeBody extends StatelessWidget {
                   ? jobsProvider.jobs.isNotEmpty
                       ? ListView.builder(
                           shrinkWrap: true,
-                          itemCount: jobsProvider.jobs.length,
-                          itemBuilder: (context, index) => HomeListTileWidget(
-                            phone: companyProvider.companies[index].phone
-                                .toString(),
-                            icon: Icons.person,
-                            title: companyProvider.companies
-                                .where((element) {
-                                  return element.id ==
-                                      jobsProvider.jobs[index].companyId;
-                                })
-                                .first
-                                .nameCompany
-                                .toString(),
-                            subtitle:
-                                jobsProvider.jobs[index].nameJob.toString(),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => JopInfoScreen(
-                                    jobData: jobsProvider.jobs[index],
-                                    companyData: companyProvider.companies
-                                        .where((element) {
-                                      return element.id ==
-                                          jobsProvider.jobs[index].companyId;
-                                    }).first,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
+                          itemCount: jobsProvider.controller.text.isNotEmpty
+                              ? jobsProvider.jobsSearch.length
+                              : jobsProvider.jobs.length,
+                          itemBuilder: (context, index) {
+                            var jop = jobsProvider.controller.text.isNotEmpty
+                                ? jobsProvider.jobsSearch[index]
+                                : jobsProvider.jobs[index];
+
+                            return !jobsProvider.isLoading
+                                ? HomeListTileWidget(
+                                    companyId: (companyProvider.companies
+                                                .any((element) {
+                                      return element.id == jop.companyId;
+                                    })
+                                            ? companyProvider.companies
+                                                .where((element) {
+                                                return element.id ==
+                                                    jobsProvider
+                                                        .jobs[index].companyId;
+                                              }).first
+                                            // toList()[0]
+                                            : CompanyModel(
+                                                nameCompany: 'لا يوجد',
+                                              ))
+                                        .id
+                                        .toString(),
+                                    companyModel: (companyProvider.companies
+                                            .any((element) {
+                                      return element.id == jop.companyId;
+                                    })
+                                        ? companyProvider.companies
+                                            .where((element) {
+                                            return element.id ==
+                                                jobsProvider
+                                                    .jobs[index].companyId;
+                                          }).first
+                                        : CompanyModel(
+                                            nameCompany: 'لا يوجد',
+                                          )),
+                                    phone: companyProvider.companies
+                                            .where((element) {
+                                              return element.id ==
+                                                      jop.companyId &&
+                                                  element.phone != null;
+                                            })
+                                            .toList()
+                                            .isNotEmpty
+                                        ? companyProvider.companies
+                                            .where((element) {
+                                              return element.id ==
+                                                      jop.companyId &&
+                                                  element.phone != null;
+                                            })
+                                            .toList()
+                                            .first
+                                            .phone!
+                                        : companyProvider.companies
+                                                .where((element) {
+                                                  return element.id ==
+                                                          jop.companyId &&
+                                                      element.phone2 != null;
+                                                })
+                                                .toList()
+                                                .isNotEmpty
+                                            ? companyProvider.companies
+                                                .where((element) {
+                                                  return element.id ==
+                                                          jop.companyId &&
+                                                      element.phone2 != null;
+                                                })
+                                                .toList()
+                                                .first
+                                                .phone2
+                                                .toString()
+                                            : 'لا يوجد',
+                                    icon: Icons.person,
+                                    title: (companyProvider.companies
+                                                .any((element) {
+                                      return element.id == jop.companyId;
+                                    })
+                                            ? companyProvider.companies
+                                                .where((element) {
+                                                return element.id ==
+                                                    jobsProvider
+                                                        .jobs[index].companyId;
+                                              }).first
+                                            // toList()[0]
+                                            : CompanyModel(
+                                                nameCompany: 'لا يوجد',
+                                              ))
+                                        .nameCompany
+                                        .toString(),
+                                    subtitle: jop.nameJob.toString(),
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => JopInfoScreen(
+                                            jobData: jop,
+                                            companyData: companyProvider
+                                                .companies
+                                                .where((element) {
+                                              return element.id ==
+                                                  jop.companyId;
+                                            }).first,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  )
+                                : const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                          },
                         )
                       : const Center(
                           child: Text('لا توجد اي وظائف حالياً'),

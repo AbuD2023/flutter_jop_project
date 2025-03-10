@@ -15,7 +15,7 @@ class SignUpOption extends StatelessWidget {
       children: [
         CartSignUpOptionBtn(
           icon: Icons.person_add_alt_1_rounded,
-          titleIcon: 'موظف',
+          // titleIcon: 'موظف',
           text: 'باحث عن وظيفة شاغرة  ',
           onTap: () {
             Navigator.push(
@@ -29,7 +29,7 @@ class SignUpOption extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 16),
           child: CartSignUpOptionBtn(
             icon: Icons.apartment_outlined,
-            titleIcon: 'شركــة',
+            // titleIcon: 'شركــة',
             text: 'باحث عن موظفين  ',
             onTap: () {
               Navigator.push(

@@ -65,18 +65,21 @@ class _CVSettingsScreenState extends State<CVSettingsScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    searcherProvider =
-        Provider.of<SearcherSigninLoginProvider>(context, listen: false);
-    ageController.text = searcherProvider.currentSearcher?.age ?? '';
-    birthPlaceController.text = searcherProvider.currentSearcher?.bDate ?? '';
-    fullNameController.text = searcherProvider.currentSearcher?.fullName ?? '';
-    currentResidenceController.text =
-        searcherProvider.currentSearcher?.location ?? '';
-    socialStatusController.text = searcherProvider.currentSearcher?.sta ?? '';
-    birthDateController.text = searcherProvider.currentSearcher?.bDate ?? '';
-    profileImageController.text = searcherProvider.currentSearcher?.img ?? '';
-    specialImageController.text =
-        searcherProvider.currentSearcher?.special ?? '';
+    if (mounted) {
+      searcherProvider =
+          Provider.of<SearcherSigninLoginProvider>(context, listen: false);
+      ageController.text = searcherProvider.currentSearcher?.age ?? '';
+      birthPlaceController.text = searcherProvider.currentSearcher?.bDate ?? '';
+      fullNameController.text =
+          searcherProvider.currentSearcher?.fullName ?? '';
+      currentResidenceController.text =
+          searcherProvider.currentSearcher?.location ?? '';
+      socialStatusController.text = searcherProvider.currentSearcher?.sta ?? '';
+      birthDateController.text = searcherProvider.currentSearcher?.bDate ?? '';
+      profileImageController.text = searcherProvider.currentSearcher?.img ?? '';
+      specialImageController.text =
+          searcherProvider.currentSearcher?.special ?? '';
+    }
   }
 
   @override
@@ -329,6 +332,8 @@ class _CVSettingsScreenState extends State<CVSettingsScreen> {
       onSave: null,
       isButtom: true,
       title: 'البيانات الشخصية',
+      isProfileImage: true,
+      imageSrc: searcherProvider.currentSearcher?.img,
       actions: [
         IconButton(
           icon: const Icon(Icons.picture_as_pdf),
@@ -945,22 +950,22 @@ class _CVSettingsScreenState extends State<CVSettingsScreen> {
                     ),
                   ],
                 )),
-            Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  width: SizeConfig.screenW! / 2,
-                  height: SizeConfig.screenH! / 6,
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                    image: searcherProvider.currentSearcher?.img != null
-                        ? NetworkImage(searcherProvider.currentSearcher!.img!)
-                        : AssetImage(
-                            'assets/images/profile.png',
-                          ),
-                  )),
-                )),
+            // Positioned(
+            //     top: 0,
+            //     left: 0,
+            //     right: 0,
+            //     child: Container(
+            //       width: SizeConfig.screenW! / 2,
+            //       height: SizeConfig.screenH! / 6,
+            //       decoration: BoxDecoration(
+            //           image: DecorationImage(
+            //         image: searcherProvider.currentSearcher?.img != null
+            //             ? NetworkImage(searcherProvider.currentSearcher!.img!)
+            //             : AssetImage(
+            //                 'assets/images/profile.png',
+            //               ),
+            //       )),
+            //     )),
           ],
         );
       }),

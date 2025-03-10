@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-// import 'package:jop_project/Screens/JopScreen/Home/home_screen.dart';
 import 'package:jop_project/constants.dart';
-import 'package:jop_project/size_config.dart';
 
 class BackgroundProfile extends StatelessWidget {
   final Widget child;
   final String title;
   final bool isButtom;
   final bool isProfileImage;
+  final String? imageSrc;
   final List<Widget>? actions;
   final VoidCallback? onExportPDF;
   final VoidCallback? onSave;
@@ -20,6 +19,7 @@ class BackgroundProfile extends StatelessWidget {
     this.actions,
     this.onExportPDF,
     this.isProfileImage = true,
+    this.imageSrc = null,
     this.onSave,
   });
 
@@ -69,15 +69,25 @@ class BackgroundProfile extends StatelessWidget {
                               top: 0,
                               left: 0,
                               right: 0,
-                              child: Container(
-                                width: SizeConfig.screenW! / 2,
-                                height: SizeConfig.screenH! / 6,
-                                decoration: const BoxDecoration(
-                                    image: DecorationImage(
-                                  image: AssetImage(
-                                    'assets/images/profile.png',
-                                  ),
-                                )),
+                              child: CircleAvatar(
+                                radius: 80,
+                                backgroundImage: imageSrc == null
+                                    ? const AssetImage(
+                                        'assets/images/profile.png',
+                                      )
+                                    : NetworkImage(imageSrc!),
+                                // child: Container(
+                                //   width: SizeConfig.screenW! / 2,
+                                //   height: SizeConfig.screenH! / 6,
+                                //   decoration: BoxDecoration(
+                                //       image: DecorationImage(
+                                //     image: imageSrc.isEmpty
+                                //         ? AssetImage(
+                                //             'assets/images/profile.png',
+                                //           )
+                                //         : NetworkImage(imageSrc),
+                                //   )),
+                                // ),
                               )),
                       ],
                     ),

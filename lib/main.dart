@@ -1,5 +1,9 @@
+import 'dart:developer';
+
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:jop_project/Providers/Caht-firebase_database/chat_firebase_database_provider.dart';
 import 'package:jop_project/Providers/Desires/desires_provider.dart';
 import 'package:jop_project/Providers/Experience/experience_provider.dart';
 import 'package:jop_project/Providers/Job/job_provider.dart';
@@ -16,8 +20,29 @@ import 'package:jop_project/Providers/SignUp/company_signin_login_provider.dart'
 import 'package:jop_project/Providers/Countries/country_provider.dart';
 import 'package:jop_project/Providers/Companies/companies_provider.dart';
 import 'package:jop_project/Providers/Searchers/searchers_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'dart:io';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (Platform.isAndroid) {
+    await Firebase.initializeApp();
+    // طلب الأذونات للأندرويد
+    var status = await Permission.storage.status;
+    if (!status.isGranted) {
+      status = await Permission.storage.request();
+      if (!status.isGranted) {
+        log('تم رفض إذن الوصول إلى التخزين storage');
+        var status2 = await Permission.manageExternalStorage.status;
+        if (!status2.isGranted) {
+          status2 = await Permission.manageExternalStorage.request();
+          if (!status2.isGranted) {
+            log('تم رفض إذن الوصول إلى التخزين manageExternalStorage');
+          }
+        }
+      }
+    }
+  }
   runApp(
     MultiProvider(
       providers: [
@@ -34,6 +59,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => OrderProvider()..getOrders()),
         ChangeNotifierProvider(
             create: (_) => SearchersProvider()..getAllSearchers()),
+        ChangeNotifierProvider(create: (_) => ChatProvider()),
       ],
       child: const MyApp(),
     ),

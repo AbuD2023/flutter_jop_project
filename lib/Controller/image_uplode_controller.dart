@@ -8,7 +8,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:jop_project/Screens/PDFViewer/pdf_viewer_screen.dart';
 
 class ImageUploadController {
-  static const String _baseUrl = 'https://bar.somee.com/api/';
+  // static const String _baseUrl = 'https://bar.somee.com/api/';
+  static const String _baseUrl = 'https://alumniclubsoft.somee.com/api/';
   final Dio _dio;
 
   ImageUploadController() : _dio = Dio() {
@@ -19,6 +20,23 @@ class ImageUploadController {
 
   Future<String?> uploadImage(File imageFile) async {
     try {
+      if (Platform.isAndroid) {
+        // طلب الأذونات للأندرويد
+        var status = await Permission.storage.status;
+        if (!status.isGranted) {
+          status = await Permission.storage.request();
+          if (!status.isGranted) {
+            var status2 = await Permission.manageExternalStorage.status;
+            if (!status2.isGranted) {
+              status2 = await Permission.manageExternalStorage.request();
+              if (!status2.isGranted) {
+                throw Exception(
+                    'تم رفض إذن الوصول إلى التخزين manageExternalStorage');
+              }
+            }
+          }
+        }
+      }
       // إنشاء FormData
       String fileName = imageFile.path.split('/').last;
       FormData formData = FormData.fromMap({
@@ -62,6 +80,23 @@ class ImageUploadController {
   // دالة رفع ملف PDF
   Future<String?> uploadPDF(File pdfFile) async {
     try {
+      if (Platform.isAndroid) {
+        // طلب الأذونات للأندرويد
+        var status = await Permission.storage.status;
+        if (!status.isGranted) {
+          status = await Permission.storage.request();
+          if (!status.isGranted) {
+            var status2 = await Permission.manageExternalStorage.status;
+            if (!status2.isGranted) {
+              status2 = await Permission.manageExternalStorage.request();
+              if (!status2.isGranted) {
+                throw Exception(
+                    'تم رفض إذن الوصول إلى التخزين manageExternalStorage');
+              }
+            }
+          }
+        }
+      }
       String fileName = pdfFile.path.split('/').last;
       FormData formData = FormData.fromMap({
         "file": await MultipartFile.fromFile(
@@ -105,15 +140,19 @@ class ImageUploadController {
     required BuildContext context,
   }) async {
     try {
-      // التحقق من الأذونات على نظام Android
       if (Platform.isAndroid) {
+        // طلب الأذونات للأندرويد
         var status = await Permission.storage.status;
         if (!status.isGranted) {
           status = await Permission.storage.request();
           if (!status.isGranted) {
-            status = await Permission.manageExternalStorage.request();
-            if (!status.isGranted) {
-              throw Exception('تم رفض إذن الوصول إلى التخزين');
+            var status2 = await Permission.manageExternalStorage.status;
+            if (!status2.isGranted) {
+              status2 = await Permission.manageExternalStorage.request();
+              if (!status2.isGranted) {
+                throw Exception(
+                    'تم رفض إذن الوصول إلى التخزين manageExternalStorage');
+              }
             }
           }
         }
@@ -258,11 +297,20 @@ class ImageUploadController {
             onSave: () async {
               // حفظ الملف في مجلد التنزيلات
               if (Platform.isAndroid) {
+                // طلب الأذونات للأندرويد
                 var status = await Permission.storage.status;
                 if (!status.isGranted) {
                   status = await Permission.storage.request();
                   if (!status.isGranted) {
-                    throw Exception('تم رفض إذن الوصول إلى التخزين');
+                    var status2 = await Permission.manageExternalStorage.status;
+                    if (!status2.isGranted) {
+                      status2 =
+                          await Permission.manageExternalStorage.request();
+                      if (!status2.isGranted) {
+                        throw Exception(
+                            'تم رفض إذن الوصول إلى التخزين manageExternalStorage');
+                      }
+                    }
                   }
                 }
 

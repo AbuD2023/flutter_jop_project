@@ -13,6 +13,8 @@ class CVScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BackgroundProfile(
+      imageSrc:
+          context.read<SearcherSigninLoginProvider>().currentSearcher?.img,
       isButtom: false,
       title: 'البيانات الشخصية',
       child: Responsive(

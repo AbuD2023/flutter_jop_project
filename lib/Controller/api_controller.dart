@@ -3,7 +3,8 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 
 class ApiController {
-  static const String _baseUrl = 'https://bar.somee.com/api/';
+  // static const String _baseUrl = 'https://bar.somee.com/api/';
+  static const String _baseUrl = 'https://alumniclubsoft.somee.com/api/';
   final Dio _dio;
 
   ApiController() : _dio = Dio() {
@@ -79,9 +80,16 @@ class ApiController {
         _dio.options.headers.addAll(headers);
       }
 
-      final response = await _dio.post(
+      final response = await _dio
+          .post(
         endpoint,
         data: data,
+      )
+          .timeout(
+        const Duration(seconds: 15),
+        onTimeout: () {
+          throw Exception(['خطاء، Time Out is { 15s }']);
+        },
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {

@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:jop_project/Models/company_model.dart';
+import 'package:jop_project/Models/job_advertisement_model.dart';
 import 'package:jop_project/Models/orders_model.dart';
 import 'package:jop_project/Providers/Companies/companies_provider.dart';
 import 'package:jop_project/Providers/Job/job_provider.dart';
@@ -52,19 +54,33 @@ class MobileOrderScreen extends StatelessWidget {
                     searcherProvider.currentSearcher!.id;
               },
             ).toList();
-            return order.isNotEmpty
-                ? ListView.builder(
-                    itemCount: order.length,
-                    itemBuilder: (context, index) {
-                      return OrderItem(order: order[index]);
-                    },
+            return orderProvider.isLoading
+                ? const Center(
+                    child: CircularProgressIndicator(),
                   )
-                : const Center(
-                    child: Text(
-                      'لا توجد اي بيانات',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  );
+                : order.isNotEmpty
+                    ? ListView.builder(
+                        itemCount: order.length,
+                        itemBuilder: (context, index) {
+                          final jobProvider =
+                              Provider.of<JobsProvider>(context);
+                          final companiesProvider =
+                              Provider.of<CompaniesProvider>(context);
+                          final job = jobProvider.jobs.firstWhere((element) =>
+                              element.id == order[index].jobAdvertisementId);
+                          final company = companiesProvider.companies
+                              .firstWhere(
+                                  (element) => element.id == job.companyId);
+                          return OrderItem(
+                              order: order[index], job: job, company: company);
+                        },
+                      )
+                    : const Center(
+                        child: Text(
+                          'لا توجد اي بيانات',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      );
           })),
         ],
       ),
@@ -74,17 +90,16 @@ class MobileOrderScreen extends StatelessWidget {
 
 class OrderItem extends StatelessWidget {
   final OrdersModel order;
-  const OrderItem({super.key, required this.order});
+  final CompanyModel company;
+  final JobAdvertisementModel job;
+  const OrderItem(
+      {super.key,
+      required this.order,
+      required this.company,
+      required this.job});
 
   @override
   Widget build(BuildContext context) {
-    final jobProvider = Provider.of<JobsProvider>(context);
-    final companiesProvider = Provider.of<CompaniesProvider>(context);
-    final job = jobProvider.jobs
-        .firstWhere((element) => element.id == order.jobAdvertisementId);
-    final company = companiesProvider.companies
-        .firstWhere((element) => element.id == job.companyId);
-
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: Card(

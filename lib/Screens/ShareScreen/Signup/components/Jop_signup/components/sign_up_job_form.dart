@@ -30,6 +30,7 @@ class _SignUpJobFormState extends State<SignUpJobForm> {
   final phoneController = TextEditingController();
   final bDateController = TextEditingController();
   String gendr = '';
+  bool isShowPassword = false;
   @override
   Widget build(BuildContext context) {
     final searcherProvider = Provider.of<SearcherSigninLoginProvider>(context);
@@ -282,19 +283,27 @@ class _SignUpJobFormState extends State<SignUpJobForm> {
             textDirection: TextDirection.rtl,
             textAlign: TextAlign.right,
             textInputAction: TextInputAction.done,
-            obscureText: true,
+            obscureText: isShowPassword,
             cursorColor: kPrimaryColor,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(15)),
-                borderSide: BorderSide(color: kBorderColor, width: 2),
-              ),
-              hintText: "كلمة المرور",
-              suffixIcon: Padding(
-                padding: EdgeInsets.all(defaultPadding),
-                child: Icon(Icons.lock, color: kBorderColor),
-              ),
-            ),
+            decoration: InputDecoration(
+                border: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                  borderSide: BorderSide(color: kBorderColor, width: 2),
+                ),
+                hintText: "كلمة المرور",
+                suffixIcon: const Padding(
+                  padding: EdgeInsets.all(defaultPadding),
+                  child: Icon(Icons.lock, color: kBorderColor),
+                ),
+                prefixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        isShowPassword = !isShowPassword;
+                      });
+                    },
+                    icon: Icon(isShowPassword
+                        ? Icons.visibility
+                        : Icons.visibility_off))),
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'الحقل مطلوب';

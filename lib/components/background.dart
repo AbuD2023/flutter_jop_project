@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:jop_project/constants.dart';
 import 'package:jop_project/size_config.dart';
 import 'package:jop_project/components/custom_drawer.dart';
 
-class Background extends StatelessWidget {
+class Background extends StatefulWidget {
   final Widget child;
   final String title;
   final String? supTitle;
@@ -26,6 +28,23 @@ class Background extends StatelessWidget {
   });
 
   @override
+  State<Background> createState() => _BackgroundState();
+}
+
+class _BackgroundState extends State<Background> {
+  @override
+  void didUpdateWidget(covariant Background oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    Timer.periodic(
+      const Duration(seconds: 2),
+      (timer) {
+        if (mounted) setState(() {});
+        timer.cancel();
+      },
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Material(
       color: kPrimaryColor,
@@ -45,16 +64,16 @@ class Background extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        title,
+                        widget.title,
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      if (supTitle != null)
+                      if (widget.supTitle != null)
                         Text(
-                          supTitle!,
+                          widget.supTitle!,
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 24,
@@ -66,43 +85,52 @@ class Background extends StatelessWidget {
               ),
               if (Navigator.canPop(context))
                 Positioned(
-                  top: 60,
+                  top: 70,
                   child: IconButton(
-                    tooltip: 'رجوع الى الخلف',
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+                    onPressed: () {},
                     icon: const Icon(
-                      Icons.arrow_back,
+                      Icons.notifications,
                       color: Colors.white,
                     ),
                   ),
                 ),
-              if (showListNotiv!)
+              if (widget.showListNotiv!)
                 Positioned(
-                  top: 20,
+                  top: 30,
                   right: 0,
                   left: 0,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.notifications,
-                          color: Colors.white,
+                      if (Navigator.canPop(context))
+                        IconButton(
+                          tooltip: 'رجوع الى الخلف',
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: const Icon(
+                            Icons.arrow_back,
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
+                      if (!Navigator.canPop(context))
+                        IconButton(
+                          onPressed: () {},
+                          icon: const Icon(
+                            Icons.notifications,
+                            color: Colors.white,
+                          ),
+                        ),
                       Builder(
                         builder: (context) => IconButton(
                           onPressed: () {
                             // عرض الـ Drawer باستخدام Overlay
                             _showDrawer(
                               context,
-                              isCompany: isCompany!,
-                              userName: userName!,
-                              userImage: userImage!,
-                              availableJobs: availableJobs!,
+                              isCompany: widget.isCompany!,
+                              userName: widget.userName ?? 'لا يوحد',
+                              userImage: widget.userImage,
+                              availableJobs: widget.availableJobs!,
                             );
                           },
                           icon: const Icon(
@@ -125,7 +153,7 @@ class Background extends StatelessWidget {
                   topRight: Radius.circular(32),
                 ),
               ),
-              child: SafeArea(child: child),
+              child: SafeArea(child: widget.child),
             ),
           ),
         ],
@@ -137,7 +165,7 @@ class Background extends StatelessWidget {
     BuildContext context, {
     required bool isCompany, // تغيير حسب نوع المستخدم الحالي
     required String userName,
-    required String userImage,
+    String? userImage,
     required int availableJobs,
   }) {
     // يجب أن تحصل على هذه المعلومات من مكان مركزي مثل Provider أو GetX

@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:jop_project/Providers/SignUp/searcher_signin_login_provider.dart';
 import 'package:jop_project/Screens/CompanyScreen/company_dashboard_screen.dart';
 import 'package:jop_project/Screens/JopScreen/Home/home_screen.dart';
@@ -21,6 +24,7 @@ class _LoginFormState extends State<LoginForm> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   String? _error;
+  bool obscureText = true;
 
   @override
   void dispose() {
@@ -43,13 +47,12 @@ class _LoginFormState extends State<LoginForm> {
         email: _emailController.text,
         password: _passwordController.text,
       );
+
       final loginResponseSearcher = await searcherProvider.login(
         email: _emailController.text,
         password: _passwordController.text,
       );
-
       if (!mounted) return;
-
       if (loginResponse.userType == "Admin") {
         if (companyProvider.currentCompany != null) {
           Navigator.pushAndRemoveUntil(
@@ -73,9 +76,28 @@ class _LoginFormState extends State<LoginForm> {
         );
       }
     } catch (e) {
-      setState(() {
-        _error = 'فشل تسجيل الدخول: ${e.toString()}';
-      });
+      log(e.toString(), name: '_login');
+      if (e.toString().contains('[خطاء، Time Out is {')) {
+        Get.snackbar('خطاء', 'تاكد من اتصال بالانترنت',
+            backgroundColor: Colors.red, colorText: Colors.white);
+        setState(() {
+          _error = 'فشل تسجيل الدخول: تاكد من إتصالك بالانترنت';
+        });
+      } else if (e.toString().contains(
+          'The status code of 401 has the following meaning: "Client error - the request contains bad syntax or cannot be fulfilled"')) {
+        Get.snackbar('خطاء', 'خطأ في كلمة المرور او البريد الالكتروني',
+            backgroundColor: Colors.red, colorText: Colors.white);
+        setState(() {
+          _error = 'فشل تسجيل الدخول: تاكد من البريد الالكتروني او كلمة المرور';
+        });
+      } else {
+        Get.snackbar('خطاء', 'خطأ غير متوقع في السيرفر',
+            backgroundColor: Colors.red, colorText: Colors.white);
+        setState(() {
+          _error =
+              'فشل تسجيل الدخول: خطأ غير متوقع في السيرفر، حاول مجداً بعد 5 دقائق';
+        });
+      }
       // ScaffoldMessenger.of(context).showSnackBar(
       //   SnackBar(content: Text(_error ?? 'حدث خطأ غير متوقع')),
       // );
@@ -125,7 +147,7 @@ class _LoginFormState extends State<LoginForm> {
               textDirection: TextDirection.rtl,
               textAlign: TextAlign.right,
               textInputAction: TextInputAction.done,
-              obscureText: true,
+              obscureText: obscureText,
               cursorColor: kPrimaryColor,
               controller: _passwordController,
               validator: (value) {
@@ -134,18 +156,26 @@ class _LoginFormState extends State<LoginForm> {
                 }
                 return null;
               },
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(30)),
                   borderSide: BorderSide(color: kBorderColor, width: 2),
                 ),
                 hintText: "كلمة المرور",
-                suffixIcon: Padding(
+                suffixIcon: const Padding(
                   padding: EdgeInsets.all(defaultPadding),
                   child: Icon(
                     Icons.lock,
                     color: kBorderColor,
                   ),
+                ),
+                prefixIcon: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      obscureText = !obscureText;
+                    });
+                  },
+                  icon: Icon(Icons.visibility),
                 ),
               ),
             ),
@@ -155,6 +185,8 @@ class _LoginFormState extends State<LoginForm> {
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Text(
                 _error!,
+                textDirection: TextDirection.rtl,
+                textAlign: TextAlign.center,
                 style: const TextStyle(color: Colors.red),
               ),
             ),

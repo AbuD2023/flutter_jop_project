@@ -1,12 +1,20 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:jop_project/Models/company_model.dart';
+import 'package:jop_project/Providers/SignUp/searcher_signin_login_provider.dart';
 import 'package:jop_project/constants.dart';
-import 'package:jop_project/Screens/JopScreen/ChatScreen/chat_screen.dart';
+import 'package:jop_project/Screens/ChatScreen/chat_screen.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io' show Platform;
 
 class HomeListTileWidget extends StatefulWidget {
   final IconData icon;
   final String title;
+  final String companyId;
+  final CompanyModel companyModel;
   final String subtitle;
   final String phone;
   final void Function()? onTap;
@@ -17,6 +25,8 @@ class HomeListTileWidget extends StatefulWidget {
     required this.title,
     required this.subtitle,
     required this.phone,
+    required this.companyModel,
+    required this.companyId,
   });
 
   @override
@@ -62,11 +72,16 @@ class _HomeListTileWidgetState extends State<HomeListTileWidget> {
             ),
             InkWell(
               onTap: () {
+                log('${widget.companyModel.id}');
+                log('${widget.companyId}', name: 'companyId');
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => ChatScreen(
-                      userName: widget.title,
+                      companyModel: widget.companyModel,
+                      searchersModel: null,
+                      chatId:
+                          '${Provider.of<SearcherSigninLoginProvider>(context).currentSearcher?.id}_${widget.companyModel.id}',
                     ),
                   ),
                 );
@@ -87,11 +102,11 @@ class _HomeListTileWidgetState extends State<HomeListTileWidget> {
                       scheme: 'tel',
                       path: widget.phone, // ضع رقم الهاتف هنا
                     );
-                    if (await canLaunchUrl(phoneUri)) {
-                      await launchUrl(phoneUri);
-                    } else {
-                      throw 'Could not launch phone call';
-                    }
+                    // if (await canLaunchUrl(phoneUri)) {
+                    await launchUrl(phoneUri);
+                    // } else {
+                    //   throw 'Could not launch phone call';
+                    // }
                   } else {
                     // في حالة سطح المكتب
                     showDialog(
@@ -113,10 +128,11 @@ class _HomeListTileWidgetState extends State<HomeListTileWidget> {
                     );
                   }
                 } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('لا يمكن إجراء المكالمة'),
-                    ),
+                  Get.snackbar(
+                    'خطأ',
+                    'لا يمكن إجراء المكالمة',
+                    backgroundColor: Colors.red,
+                    colorText: Colors.white,
                   );
                 }
               },

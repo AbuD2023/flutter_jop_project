@@ -6,13 +6,13 @@ class CartSignUpOptionBtn extends StatelessWidget {
   const CartSignUpOptionBtn({
     super.key,
     required this.text,
-    required this.titleIcon,
+    // required this.titleIcon,
     required this.icon,
     this.onTap,
   });
 
   final String text;
-  final String titleIcon;
+  // final String titleIcon;
   final IconData icon;
   final void Function()? onTap;
 
@@ -58,11 +58,11 @@ class CartSignUpOptionBtn extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      titleIcon,
-                      style: Theme.of(context).textTheme.labelMedium,
-                      overflow: TextOverflow.clip,
-                    ),
+                    // Text(
+                    //   titleIcon,
+                    //   style: Theme.of(context).textTheme.labelMedium,
+                    //   overflow: TextOverflow.clip,
+                    // ),
                     // const SizedBox(
                     //   width: defaultPadding / 4,
                     // ),

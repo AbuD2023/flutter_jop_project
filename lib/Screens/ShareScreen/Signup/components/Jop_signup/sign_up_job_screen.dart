@@ -5,9 +5,14 @@ import 'package:jop_project/components/background.dart';
 import 'package:jop_project/constants.dart';
 import 'package:jop_project/responsive.dart';
 
-class SignUpJobScreen extends StatelessWidget {
+class SignUpJobScreen extends StatefulWidget {
   const SignUpJobScreen({super.key});
 
+  @override
+  State<SignUpJobScreen> createState() => _SignUpJobScreenState();
+}
+
+class _SignUpJobScreenState extends State<SignUpJobScreen> {
   @override
   Widget build(BuildContext context) {
     return const Background(

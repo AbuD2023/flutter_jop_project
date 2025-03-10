@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "205433380220",
+    "firebase_url": "https://jop-project-6e8d3-default-rtdb.firebaseio.com",
+    "project_id": "jop-project-6e8d3",
+    "storage_bucket": "jop-project-6e8d3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:205433380220:android:742a3e7f61f7179597d8f9",
+        "android_client_info": {
+          "package_name": "com.mid_company.jop_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9ZgiR7HVWfOzepmjTMff8FB8_jj95YPw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

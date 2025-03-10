@@ -13,6 +13,7 @@ class CompanyInfoScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Background(
+      showListNotiv: true,
       title: 'معلومات الشركة',
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -20,18 +21,20 @@ class CompanyInfoScreen extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 50,
-              backgroundImage: NetworkImage(company.img!),
+              backgroundImage: company.img != null
+                  ? NetworkImage(company.img!)
+                  : const AssetImage('assets/images/profile.png'),
             ),
             const SizedBox(height: 24),
             _buildInfoCard([
-              _buildInfoRow('اسم الشركة', company.nameCompany!),
-              _buildInfoRow('التخصص', company.special!),
+              _buildInfoRow('اسم الشركة', company.nameCompany ?? ''),
+              _buildInfoRow('التخصص', company.special ?? ''),
               _buildInfoRow('الموقع', company.location!),
               _buildInfoRow('الفرع', company.special.toString()),
-              _buildInfoRow('رقم الهاتف', company.phone!),
-              _buildInfoRow('البريد الإلكتروني', company.email!),
+              _buildInfoRow('رقم الهاتف', company.phone ?? ''),
+              _buildInfoRow('البريد الإلكتروني', company.email ?? ''),
               _buildInfoRow('الوصف', company.desc.toString()),
-              _buildInfoRow('نوع الشكرة', company.typeCompany!),
+              _buildInfoRow('نوع الشكرة', company.typeCompany ?? ''),
             ]),
             const SizedBox(height: 24),
             SizedBox(
